@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import com.myp.domain.BoardVO;
 
+//ServiceImpl -> dao 
 @Repository
 public class BoardDAOImpl implements BoardDAO {
 
