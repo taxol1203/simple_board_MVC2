@@ -26,15 +26,41 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		from board
 		where idx = #{bno}
 	</delete>
+	<!-- 조회수 증가 -->
+	<update id="updateViewCnt">
+		update board 
+		set	hit = hit + 1
+		where idx = #{bno}
+	</update>
 
 	<!-- 전체 목록 -->
-	<select id="listAll" resultType="com.myp.domain.BoardVO">
+	<select id="listPage" resultType="com.myp.domain.BoardVO">
 	 <![CDATA[
 	 	select	idx as bno, title, content, name as writer, date as regdate, hit as viewcnt 
 	 	from	board 
 	 	where	idx > 0 
 	 	order by idx desc, date desc
+	 	limit #{page}, 10
 	 ]]>
 	</select>
-
+	
+	<select id="listCriteria" resultType="com.myp.domain.BoardVO">
+	 <![CDATA[
+	 	select	idx as bno, title, content, name as writer, date as regdate, hit as viewcnt 
+	 	from	board 
+	 	where	idx > 0 
+	 	order by idx desc, date desc
+	 	limit #{pageStart}, #{perPageNum}
+	 ]]>
+	</select>
+	
+	<!-- 전체 게시글 숫자 파악 -->
+	<select id="countPaging" resultType="int">
+	 <![CDATA[
+	 	select	count(idx)
+	 	from	board 
+	 	where	idx > 0 
+	 ]]>
+	</select>
+	
 </mapper>

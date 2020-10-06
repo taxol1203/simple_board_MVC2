@@ -3,6 +3,7 @@ package com.myp.service;
 import java.util.List;
 
 import com.myp.domain.BoardVO;
+import com.myp.domain.Criteria;
 import com.myp.persistence.BoardDAO;
 import javax.inject.Inject;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,7 @@ public class BoardServiceImpl implements BoardService {
 
 	@Override
 	public BoardVO read(Integer bno) throws Exception {
+		dao.updateViewCnt(bno);
 		return dao.read(bno);
 	}
 
@@ -41,5 +43,14 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	public List<BoardVO> listAll() throws Exception {
 		return dao.listAll();
+	}
+	@Override
+	public List<BoardVO> listCriteria(Criteria cri) throws Exception {
+		return dao.listCriteria(cri);
+	}
+
+	@Override
+	public int listCountCriteria(Criteria cri) throws Exception {
+		return dao.countPaging(cri);
 	}
 }
