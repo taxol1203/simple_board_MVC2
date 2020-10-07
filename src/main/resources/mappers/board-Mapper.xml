@@ -63,4 +63,55 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	 ]]>
 	</select>
 	
+	<!-- 검색  -->
+	<sql id = "search">
+		<if test = "searchType != null">
+			<if test = "searchType == 't'.toString()">
+				and title like CONCAT('%', #{keyword}, '%')
+			</if>
+			<if test = "searchType == 'c'.toString()">
+				and content like CONCAT('%', #{keyword}, '%')
+			</if>
+			<if test = "searchType == 'w'.toString()">
+				and name like CONCAT('%', #{keyword}, '%')
+			</if>
+			<if test = "searchType == 'tc'.toString()">
+				and (title like CONCAT('%', #{keyword}, '%')
+				OR content like CONCAT('%', #{keyword}, '%'))				
+			</if>
+			<if test = "searchType == 'cw'.toString()">
+				and (content like CONCAT('%', #{keyword}, '%')
+				OR name like CONCAT('%', #{keyword}, '%'))
+			</if>
+			<if test = "searchType == 'tcw'.toString()">
+				and (title like CONCAT('%', #{keyword}, '%')
+				OR content like CONCAT('%', #{keyword}, '%')
+				OR name like CONCAT('%', #{keyword}, '%'))
+			</if>
+		</if>
+	</sql>
+	
+	<select id="listSearch" resultType="BoardVO">
+		<![CDATA[
+			select	idx as bno, title, content, name as writer, date as regdate, hit as viewcnt 
+			from	board
+			where	idx > 0
+		]]>
+		<include refid="search"></include>
+		<![CDATA[
+			order by idx desc
+			limit #{pageStart}, #{perPageNum}
+		]]>
+	</select>
+	
+	<select id="listSearchCount" resultType="int">
+		<![CDATA[  
+			select count(idx) 
+			from board 
+			where idx > 0 
+		]]>
+		<include refid="search"></include>
+	</select>
+	
+	
 </mapper>

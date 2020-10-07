@@ -4,12 +4,18 @@
 <head>
 	<title>Home</title>
 </head>
-<body>
-<h1>
-	Hello world!  
-</h1>
 
-<P>  The time on the server is ${serverTime}. </P>
-<P>  Hello worldwldowfdfdfd on ddfdffdfthe server is ${serverTime}. </P>
+
+
+<body>
+	<form action = "list" method = "get">
+		<button type="submit">Go to CRUD board</button>
+	</form>
+	
+	<h1>
+		Hello world!~~
+	</h1>
+	
+	<P>  The time on the server is ${serverTime}. </P>
 </body>
 </html>

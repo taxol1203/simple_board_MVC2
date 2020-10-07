@@ -17,7 +17,7 @@
 		<property name="driverClassName"
 			value="com.mysql.jdbc.Driver"></property>
 		<property name="url"
-			value="jdbc:mysql://localhost:3306/mysql?characterEncoding=utf8&amp;useSSL=false"></property>
+			value="jdbc:mysql://localhost:3306/board?characterEncoding=utf8&amp;useSSL=false"></property>
 		<property name="username" value="root"></property>
 		<property name="password" value="7777"></property>
 	</bean>

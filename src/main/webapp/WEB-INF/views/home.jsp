@@ -8,7 +8,7 @@
 
 
 <body>
-	<form action = "listPage" method = "get">
+	<form action = "list" method = "get">
 		<button type="submit">Go to CRUD board</button>
 	</form>
 	

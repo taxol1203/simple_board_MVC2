@@ -6,35 +6,112 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="com.myp.mapper.BoardMapper">
 
 	<insert id="create">
-		insert into board (title, content, name) 
-		values(#{title},#{content}, #{writer})
+		insert into board (title, content, name , date , hit)
+		values(#{title},#{content}, #{writer} , #{regdate} ,#{viewcnt})
 	</insert>
-	
-	 <select id="read" resultType="com.myp.domain.BoardVO"> <!-- 데이터를 받아오기 위한 resultType 명시 -->
-		select 	idx, title, content, writer, date, hit 
-	 	from	board 
-		where 	idx = #{bno}
-	 </select>
-	
-	 <update id="update">
-	 	update 	board set title =#{title}, content =#{content} 
-	 	where 	idx = #{bno}
-	 </update>
-	
-	 <delete id="delete">
-	 	delete 	
-	 	from board 
-	 	where 	idx = #{bno}
-	 </delete>
-	
-	 <!-- 전체 목록 -->
-	 <select id="listAll" resultType="com.myp.domain.BoardVO">
+
+	<select id="read" resultType="com.myp.domain.BoardVO"> <!-- 데이터를 받아오기 위한 resultType 명시 -->
+		select idx as bno, title, content, name as writer, date as regdate, hit as viewcnt
+		from board
+		where idx = #{bno}
+	</select>
+
+	<update id="update">
+		update board set title =#{title}, content =#{content}
+		where idx = #{bno}
+	</update>
+
+	<delete id="delete">
+		delete
+		from board
+		where idx = #{bno}
+	</delete>
+	<!-- 조회수 증가 -->
+	<update id="updateViewCnt">
+		update board 
+		set	hit = hit + 1
+		where idx = #{bno}
+	</update>
+
+	<!-- 전체 목록 -->
+	<select id="listPage" resultType="com.myp.domain.BoardVO">
 	 <![CDATA[
-	 	select	idx, title, content, name, date, hit 
+	 	select	idx as bno, title, content, name as writer, date as regdate, hit as viewcnt 
 	 	from	board 
 	 	where	idx > 0 
 	 	order by idx desc, date desc
-	 ]]>  
-	 </select>
-
- </mapper>
+	 	limit #{page}, 10
+	 ]]>
+	</select>
+	
+	<select id="listCriteria" resultType="com.myp.domain.BoardVO">
+	 <![CDATA[
+	 	select	idx as bno, title, content, name as writer, date as regdate, hit as viewcnt 
+	 	from	board 
+	 	where	idx > 0 
+	 	order by idx desc, date desc
+	 	limit #{pageStart}, #{perPageNum}
+	 ]]>
+	</select>
+	
+	<!-- 전체 게시글 숫자 파악 -->
+	<select id="countPaging" resultType="int">
+	 <![CDATA[
+	 	select	count(idx)
+	 	from	board 
+	 	where	idx > 0 
+	 ]]>
+	</select>
+	
+	<!-- 검색  -->
+	<sql id = "search">
+		<if test = "searchType != null">
+			<if test = "searchType == 't'.toString()">
+				and title like CONCAT('%', #{keyword}, '%')
+			</if>
+			<if test = "searchType == 'c'.toString()">
+				and content like CONCAT('%', #{keyword}, '%')
+			</if>
+			<if test = "searchType == 'w'.toString()">
+				and name like CONCAT('%', #{keyword}, '%')
+			</if>
+			<if test = "searchType == 'tc'.toString()">
+				and (title like CONCAT('%', #{keyword}, '%')
+				OR content like CONCAT('%', #{keyword}, '%'))				
+			</if>
+			<if test = "searchType == 'cw'.toString()">
+				and (content like CONCAT('%', #{keyword}, '%')
+				OR name like CONCAT('%', #{keyword}, '%'))
+			</if>
+			<if test = "searchType == 'tcw'.toString()">
+				and (title like CONCAT('%', #{keyword}, '%')
+				OR content like CONCAT('%', #{keyword}, '%')
+				OR name like CONCAT('%', #{keyword}, '%'))
+			</if>
+		</if>
+	</sql>
+	
+	<select id="listSearch" resultType="BoardVO">
+		<![CDATA[
+			select	idx as bno, title, content, name as writer, date as regdate, hit as viewcnt 
+			from	board
+			where	idx > 0
+		]]>
+		<include refid="search"></include>
+		<![CDATA[
+			order by idx desc
+			limit #{pageStart}, #{perPageNum}
+		]]>
+	</select>
+	
+	<select id="listSearchCount" resultType="int">
+		<![CDATA[  
+			select count(idx) 
+			from board 
+			where idx > 0 
+		]]>
+		<include refid="search"></include>
+	</select>
+	
+	
+</mapper>

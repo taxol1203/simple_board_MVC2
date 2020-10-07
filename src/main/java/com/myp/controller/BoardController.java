@@ -15,6 +15,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.myp.domain.BoardVO;
 import com.myp.domain.Criteria;
 import com.myp.domain.PageMaker;
+import com.myp.domain.SearchCriteria;
 import com.myp.service.BoardService;
 
 @Controller
@@ -77,4 +78,12 @@ public class BoardController {
 	    pageMaker.setTotalCount(service.listCountCriteria(cri)); // 전체 게시글 갯수 카운트
 	    model.addAttribute("pageMaker", pageMaker);
 	}
+	@RequestMapping(value = "/list", method = RequestMethod.GET)
+	  public void listPage(@ModelAttribute("cri") SearchCriteria cri, Model model) throws Exception {
+	    model.addAttribute("list", service.listSearchCriteria(cri)); //전체목록에 검색페이징 기능+
+	    PageMaker pageMaker = new PageMaker();
+	    pageMaker.setCri(cri);
+	    pageMaker.setTotalCount(service.listSearchCount(cri));//전체목록에 검색페이징 카운트+
+	    model.addAttribute("pageMaker", pageMaker);
+	  }
 }
